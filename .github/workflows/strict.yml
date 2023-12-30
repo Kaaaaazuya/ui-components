@@ -1,0 +1,5 @@
+- name: run eslint strict
+  run: |
+    reviewdog -runners=eslint -diff="git diff main" -fail-on-error -reporter=github-pr-check -filter-mode=file
+  env:
+    REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

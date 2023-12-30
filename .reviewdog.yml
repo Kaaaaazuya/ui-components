@@ -1,0 +1,7 @@
+runner:
+  tsc:
+    cmd: yarn --silent test:build --project tsconfig.strict.json --noEmit
+    format: tsc
+  eslint:
+    cmd: yarn --silent test:lint --config ./.eslintrc.strict.js
+    format: eslint
