@@ -7,10 +7,15 @@ type ButtonProps = {
 }
 
 export const Button = ({
+  /** ボタンに表示するテキスト */
   label,
+  /** ボタンのサイズ */
   size = 'md',
+  /** ボタンのタイプ */
   type = 'button',
+  /** ボタンの色 */
   color = 'primary',
+  /** クリック時の挙動 */
   onClick,
 }: ButtonProps) => {
   const sizeVariants: { [key: string]: string } = {
