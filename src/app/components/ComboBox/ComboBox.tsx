@@ -1,6 +1,13 @@
 import { ListboxOption } from '@/app/types/ListBoxOption'
 import { useCombobox } from '@/app/useComboBox'
-import { KeyboardEventHandler, MouseEventHandler, useCallback, useId } from 'react'
+import {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useId,
+  useState,
+} from 'react'
+import { Tag } from '../Tag/Tag'
 
 type Props = {
   allOptions: ListboxOption[]
@@ -11,8 +18,11 @@ export const Combobox = ({ allOptions }: Props) => {
   const labelId = useId()
   const inputId = useId()
 
+  const [focus, setFocus] = useState(false)
+
   const {
     value,
+    deleteValue,
     inputValue,
     options,
     visibleListbox,
@@ -24,8 +34,12 @@ export const Combobox = ({ allOptions }: Props) => {
     setFocusedOptionIndex,
   } = useCombobox({ allOptions })
 
-  const onFocusInput = useCallback(() => setVisibleListbox(true), [setVisibleListbox])
-  const onBlurInput = useCallback(() => setVisibleListbox(false), [setVisibleListbox])
+  const onFocusInput = useCallback(() => {
+    setVisibleListbox(true), setFocus(true)
+  }, [setVisibleListbox])
+  const onBlurInput = useCallback(() => {
+    setVisibleListbox(false), setFocus(false)
+  }, [setVisibleListbox])
 
   /**
    * input要素のキーボードイベントに応じて状態を管理
@@ -36,7 +50,6 @@ export const Combobox = ({ allOptions }: Props) => {
         setVisibleListbox(false)
         setFocusedOptionIndex(null)
       } else if (event.key === 'ArrowUp') {
-        event.preventDefault()
         // ↑キーが押されたらフォーカスを前に移動
         setFocusedOptionIndex((prev: number | null) => {
           if (prev == null || prev === 0) {
@@ -46,13 +59,17 @@ export const Combobox = ({ allOptions }: Props) => {
         })
       } else if (event.key === 'ArrowDown') {
         // ↓キーが押されたらフォーカスを次に移動
-        event.preventDefault()
         setFocusedOptionIndex((prev: number | null) => {
           if (prev == null || prev === options.length - 1) {
             return 0
           }
           return prev + 1
         })
+      } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        if (value && inputValue === '') {
+          deleteValue()
+          setVisibleListbox(true)
+        }
       } else if (event.key === 'Enter') {
         if (focusedOption != null) {
           selectFocusedOption(focusedOption)
@@ -60,11 +77,14 @@ export const Combobox = ({ allOptions }: Props) => {
       }
     },
     [
+      deleteValue,
       focusedOption,
+      inputValue,
       options.length,
       selectFocusedOption,
       setFocusedOptionIndex,
       setVisibleListbox,
+      value,
     ],
   )
 
@@ -86,17 +106,15 @@ export const Combobox = ({ allOptions }: Props) => {
 
   return (
     <div>
-      <label id={labelId} htmlFor={inputId} className={`relative`}>
-        ユーザー
-      </label>
-      <div>
-        {value && (
-          <>
-            <div>{value.label}</div>
-          </>
-        )}
+      <div
+        className={`flex gap-4 border p-2 ${
+          focus ? 'border-blue-400' : 'border-gray-200'
+        }`}
+      >
+        {value && <Tag label={value.label} onDelete={deleteValue} />}
         <input
           type='text'
+          autoComplete='off'
           role='combobox'
           id={inputId}
           value={inputValue}
@@ -110,10 +128,12 @@ export const Combobox = ({ allOptions }: Props) => {
           aria-expanded={visibleListbox}
           onKeyDown={onKeyDownInput}
           aria-activedescendant={focusedOption ? focusedOption.id : ''}
+          //  TODO: a11y 観点でやめる
+          style={{ outline: 0 }}
         />
       </div>
 
-      {visibleListbox && options.length > 0 ? (
+      {!value && visibleListbox && options.length > 0 ? (
         <ul
           role='listbox'
           id={listboxId}
@@ -124,6 +144,7 @@ export const Combobox = ({ allOptions }: Props) => {
           {options.map((option, index) => (
             <li
               id={`lb-op-${option}`}
+              data-index={index}
               role='option'
               key={option.id}
               className={`px-1 py-2 hover:bg-yellow-300 aria-selected:bg-yellow-300`}

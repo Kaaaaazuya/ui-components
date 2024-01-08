@@ -13,9 +13,14 @@ export const useCombobox = ({ allOptions }: Props) => {
   const [focusedOptionIndex, setFocusedOptionIndex] = useState<number | null>(null)
   const [focusedOption, setFocusedOption] = useState<ListboxOption | null>(null)
 
+  const deleteValue = useCallback(() => {
+    setValue(null)
+    setInputValue('')
+  }, [])
+
   const selectFocusedOption = useCallback((option: ListboxOption) => {
     setValue(option)
-    setInputValue(option.label)
+    setInputValue('')
     setVisibleListbox(false)
     setFocusedOptionIndex(null)
   }, [])
@@ -30,7 +35,7 @@ export const useCombobox = ({ allOptions }: Props) => {
         ),
       )
     }
-    setVisibleListbox(true)
+    // setVisibleListbox(true)
     setFocusedOptionIndex(null)
   }, [inputValue, allOptions])
 
@@ -48,6 +53,7 @@ export const useCombobox = ({ allOptions }: Props) => {
 
   return {
     value,
+    deleteValue,
     inputValue,
     options,
     visibleListbox,
