@@ -1,5 +1,5 @@
 import { ListboxOption } from '@/app/types/ListBoxOption'
-import { useCombobox } from '@/app/useComboBox'
+import { useCombobox } from '@/app/hooks/useComboBox'
 import {
   KeyboardEventHandler,
   MouseEventHandler,

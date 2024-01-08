@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, ChangeEvent } from 'react'
-import { ListboxOption } from './types/ListBoxOption'
+import { ListboxOption } from '../types/ListBoxOption'
 
 type Props = {
   allOptions: ListboxOption[]
