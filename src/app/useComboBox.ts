@@ -35,7 +35,6 @@ export const useCombobox = ({ allOptions }: Props) => {
         ),
       )
     }
-    // setVisibleListbox(true)
     setFocusedOptionIndex(null)
   }, [inputValue, allOptions])
 
