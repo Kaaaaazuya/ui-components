@@ -6,6 +6,7 @@ module.exports = {
     'plugin:tailwindcss/recommended',
     'prettier',
     'plugin:storybook/recommended',
+    'plugin:jsx-a11y/recommended',
   ],
   settings: {
     react: {
@@ -33,5 +34,6 @@ module.exports = {
     'react/jsx-no-bind': 'off',
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
+    'jsx-a11y/mouse-events-have-key-events': 'off', // TODO: fix
   },
 }
